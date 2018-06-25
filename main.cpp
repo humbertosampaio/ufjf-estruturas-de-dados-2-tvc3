@@ -1,6 +1,16 @@
 #include <iostream>
+#include <string>
+#include "Headers/HuffmanTree.h"
+#include "Headers/HuffmanNode.h"
 
-int main() {
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+using namespace std;
+
+int main()
+{
+	string text = "bookkeeper";
+	HuffmanTree* tree = new HuffmanTree(text);
+
+
+	system("PAUSE");
+	return 0;
 }
