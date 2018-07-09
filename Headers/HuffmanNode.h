@@ -1,6 +1,8 @@
 #ifndef TRABALHO_3_HUFFMANNODE_H
 #define TRABALHO_3_HUFFMANNODE_H
 
+#include <iostream>
+
 using namespace std;
 
 class HuffmanNode
