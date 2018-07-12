@@ -6,7 +6,10 @@
 #define TRABALHO_ED2_3_HUFFMAN_H
 
 #include "../Headers/Node.h"
+#include "Question.h"
 #include <iostream>
+#include <vector>
+
 using namespace std;
 
 class Huffman {
@@ -18,7 +21,7 @@ public:
     string encode(string text);
     string decode(string text);
     void generateTree();
-
+    void compressQuestions(vector<Question> questionList);
 
 private:
     void insert(char c, int f); //Insere o caractere

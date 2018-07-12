@@ -272,6 +272,16 @@ string Huffman::decode(string text){
 
 }
 
+
+void Huffman::compressQuestions(vector<Question> questionList){
+    for (int i = 0; i < 100; ++i)
+    {
+        encode(questionList[i].getBody());
+        cout << i;
+    }
+}
+
+
 void Huffman::deleteHuffman(Node *node) {
     if(node != nullptr){
         deleteHuffman(node->getLeft());

@@ -16,7 +16,7 @@ int main()
 
 	LZW lz;
 	vector<Question> q;
-	FileUtils::readFileQuestion("/home/edson/pythonquestions/Questions.csv", q);
+	FileUtils::readFileQuestion("C:/Users/Luis/Desktop/Trabalho_ED2/Questions.csv", q);
     lz.compressQuestions(q);
 
 	Huffman hf;
@@ -24,6 +24,8 @@ int main()
 	string teste = hf.encode("bananabanabofana");
 
 	cout << hf.decode(teste);
+
+	hf.compressQuestions(q);
 
 	//system("PAUSE");
 	return 0;
