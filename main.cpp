@@ -2,7 +2,7 @@
 #include <string>
 #include "Headers/HuffmanTree.h"
 #include "Headers/HuffmanNode.h"
-#include <LZW.h>
+#include "Headers/LZW.h"
 using namespace std;
 
 int main()

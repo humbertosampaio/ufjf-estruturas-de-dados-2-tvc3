@@ -3,7 +3,7 @@
 //
 
 #include <map>
-#include "LZW.h"
+#include "../Headers/LZW.h"
 
 LZW::LZW()
 {
