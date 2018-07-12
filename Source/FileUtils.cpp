@@ -64,13 +64,14 @@ void FileUtils::readFileQuestion(string path, vector<Question> &questionList)
                     tempString.push_back(buffer[i]);
                 } else if (quotationMarksCount % 2 == 0)
                 {
-                    obj[objPosition] = tempString;
+                    if (objPosition == 5)
+                        obj[objPosition] = tempString;
                     tempString.clear();
                     ++objPosition;
                 }
                 if (objPosition > 5)
                 {
-                    questionList.emplace_back(obj);
+                    questionList.emplace_back(obj[5]);
                     registriesCount++;
 
                     if (registriesCount % 24000 == 0)

@@ -4,6 +4,8 @@
 #include "Headers/HuffmanNode.h"
 #include "Headers/LZW.h"
 #include "Headers/Huffman.h"
+#include "Headers/Question.h"
+#include "Headers/FileUtils.h"
 
 using namespace std;
 
@@ -13,7 +15,9 @@ int main()
 	//HuffmanTree* tree = new HuffmanTree(text);
 
 	LZW lz;
-	lz.compressText("bananabanabofana");
+	vector<Question> q;
+	FileUtils::readFileQuestion("/home/edson/pythonquestions/Questions.csv", q);
+    lz.compressQuestions(q);
 
 	Huffman hf;
 
