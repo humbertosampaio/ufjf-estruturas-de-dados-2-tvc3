@@ -18,9 +18,10 @@ private:
     int score;
     string date;
     string title;
+    string body;
 public:
     Question() = default;
-    Question(string* question);
+    Question(string question);
     ~Question();
     void printComponents ();
     int getQuestionId() const;
@@ -40,6 +41,8 @@ public:
     bool operator!=(const int &rhs) const;
 
     unsigned int getUserId() const;
+
+    const string &getBody() const;
 
 };
 

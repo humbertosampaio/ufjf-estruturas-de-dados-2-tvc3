@@ -41,13 +41,9 @@ bool Question::operator!=(const int &rhs) const {
     return rhs != questionId;
 }
 
-Question::Question(string *question)
+Question::Question(string question)
 {
-    this->questionId = stoi(question[0], nullptr, 10);
-    this->userId = (question[1] != "NA" ? stoi(question[1], nullptr, 10) : -1);
-    this->score = stoi(question[3], nullptr, 10);
-    this->date = question[2];
-    this->title = question[4];
+    body = question;
 }
 
 Question::~Question()
@@ -74,4 +70,8 @@ void Question::setQuestionId(const unsigned int questionId) {
 
 unsigned int Question::getUserId() const {
     return userId;
+}
+
+const string &Question::getBody() const {
+    return body;
 }

@@ -7,6 +7,7 @@
 
 LZW::LZW()
 {
+    dictionary.reserve(100000000);
     string s;
     index = 0;
     for (index; index < 256; index++)
@@ -16,21 +17,22 @@ LZW::LZW()
     }
 }
 
-string LZW::compressText(string text)
+void LZW::compressText(string text)
 {
     string str, strRet;
     str.push_back(text[0]);
     unordered_map<string,unsigned int>::iterator it;
     for (auto i = text.begin()+1; i != text.end(); ++i)
     {
+        //cout << str << endl;
         it = dictionary.find(str+(*i));
         if (it != dictionary.end()) {
             str.push_back(*i);
             continue;
         }
         else {
-            cout << str << " ";
-            strRet += str + " ";
+            //cout << str << " ";
+            //strRet += str + " ";
             str.push_back(*i);
             cout << str << " " << index << " " << endl;
             dictionary.insert(pair<string,unsigned int>(str, index++));
@@ -53,3 +55,13 @@ string LZW::compressText(string text)
     //cout << strRet;
 }
 
+void LZW::compressQuestions(vector<Question> questionList)
+{
+
+    for (int i = 0; i < 100; ++i)
+    {
+        compressText(questionList[i].getBody());
+        cout << i;
+    }
+    cout << dictionary.size();
+}

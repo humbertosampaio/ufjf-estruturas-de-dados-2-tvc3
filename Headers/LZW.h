@@ -7,6 +7,8 @@
 
 #include <iostream>
 #include <unordered_map>
+#include <vector>
+#include "Question.h"
 
 using namespace std;
 
@@ -14,7 +16,9 @@ class LZW {
 
 public:
     LZW();
-    string compressText(string text);
+    ~LZW() = default;
+    void compressText(string text);
+    void compressQuestions(vector<Question> questionList);
 
 private:
     unordered_map<string, unsigned int> dictionary;
