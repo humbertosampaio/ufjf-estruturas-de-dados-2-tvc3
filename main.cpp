@@ -15,6 +15,12 @@ int main()
 	LZW lz;
 	lz.compressText("bananabanabofana");
 
+	Huffman hf;
+
+	string teste = hf.encode("bananabanabofana");
+
+	cout << hf.decode(teste);
+
 	//system("PAUSE");
 	return 0;
 }
