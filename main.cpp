@@ -176,7 +176,7 @@ void openMenu(Variables &vars) {
             //decod por lzw
             break;
         case 9:
-            tests()
+            tests();
             break;
         default:
             cout << "Opcao invalida. Tente novamente:" << endl;
