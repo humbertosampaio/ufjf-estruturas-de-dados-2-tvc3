@@ -301,7 +301,7 @@ void FileUtils::pauseScreen(bool continuar)
     int c;
     cout << endl << "Pressione <Enter> para " << (continuar ? "continuar" : "fechar");
     cout << " o algoritmo...." << endl;
-    while ((c = getchar()) != '\n' && c != EOF);
+    while (c != EOF && (c = getchar()) != '\n');
     clearerr(stdin);
     //getchar();
 }

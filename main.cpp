@@ -10,6 +10,8 @@
 #include "Headers/LZW.h"
 
 #define RANDOM_SEED std::chrono::system_clock::now().time_since_epoch().count()
+#define ENCODE 0
+#define DECODE 1
 
 using namespace std;
 
@@ -30,7 +32,7 @@ struct Variables
     unsigned long N;
 
     /// Usados na escolha dos menus
-    short entry;
+    short entry, entryCodeDecode;
 
     void entryPath(string _path)
     {
@@ -55,20 +57,18 @@ struct Variables
 vector<Question> getVetQuestionsRand(vector<Question> &vetQuestions, const int &n);
 string getBodyNQuestions(vector<Question> &questionList);
 void openMenu(Variables &vars);
-void codeHuffman(Variables &vars);
-void decodeHuffman(Variables &vars);
-void codeLZ77(Variables &vars);
-void decodeLZ77(Variables &vars);
-void codeLZ78(Variables &vars);
-void decodeLZ78(Variables &vars);
-void codeLZW(Variables &vars);
-void decodeLZW(Variables &vars);
+void codeDecodeHuffman(Variables &vars);
+void codeDecodeLZ77(Variables &vars);
+void codeDecodeLZ78(Variables &vars);
+void codeDecodeLZW(Variables &vars);
 void tests();
 
 
 
 int main(int argc, char **argv)
 {
+
+    ///TESTES --------------------------
 /*	string text = "bookkeeper";
 	//HuffmanTree* tree = new HuffmanTree(text);
 
@@ -126,6 +126,8 @@ int main(int argc, char **argv)
     if (vars.questionVector.empty())
         FileUtils::readFileQuestion(vars.questionPath, vars.questionVector);
 
+
+
     if(vars.Ns.empty())
     {
         vars.Ns = FileUtils::readInputFile("entrada.txt");
@@ -149,47 +151,31 @@ void openMenu(Variables &vars) {
     cout << "------------------------------------------------------------------------" << endl;
     cout << "||                 INSIRA O CODIGO DA OPCAO ESCOLHIDA                 ||" << endl;
     cout << "||       Opcao 0: Sair e encerrar a execucao                          ||" << endl;
-    cout << "||       Opcao 1: Codificação por Huffman                             ||" << endl;
-    cout << "||       Opcao 2: Decodificação por Huffman                           ||" << endl;
-    cout << "||       Opcao 3: Codificação por LZ77                                ||" << endl;
-    cout << "||       Opcao 4: Decodificação por LZ77                              ||" << endl;
-    cout << "||       Opcao 5: Codificação por LZ7                                 ||" << endl;
-    cout << "||       Opcao 6: Decodificação por LZ78                              ||" << endl;
-    cout << "||       Opcao 7: Codificação por LZW                                 ||" << endl;
-    cout << "||       Opcao 8: Decodificação por LZW                               ||" << endl;
-    cout << "||       Opcao 9: Testes                                              ||" << endl;
+    cout << "||       Opcao 1: Codificacao e Decodificacao por Huffman             ||" << endl;
+    cout << "||       Opcao 2: Codificação e Decodificacao por LZ77                ||" << endl;
+    cout << "||       Opcao 3: Codificação e Decodificacao por LZ7                 ||" << endl;
+    cout << "||       Opcao 4: Codificação e Decodificacao por LZW                 ||" << endl;
+    cout << "||       Opcao 5: Testes                                              ||" << endl;
     cout << "||--------------------------------------------------------------------||" << endl;
-    cout << "||     Opcao: ";
+    cout << "||       Opcao: ";
     cin >> vars.entry;
     cout << "||--------------------------------------------------------------------||" << endl;
     switch (vars.entry) {
         case 0:
             FileUtils::endProgram();
         case 1:
-            codeHuffman(vars);
+            codeDecodeHuffman(vars);
             break;
         case 2:
-            decodeHuffman(vars);
+            codeDecodeLZ77(vars);
             break;
         case 3:
-            codeLZ77(vars);
+            codeDecodeLZ78(vars);
             break;
         case 4:
-            decodeLZ77(vars);
+            codeDecodeLZW(vars);
             break;
         case 5:
-            codeLZ78(vars);
-            break;
-        case 6:
-            decodeLZ78(vars);
-            break;
-        case 7:
-            decodeLZW(vars);
-            break;
-        case 8:
-            decodeLZW(vars);
-            break;
-        case 9:
             tests();
             break;
         default:
@@ -208,50 +194,42 @@ void openMenu(Variables &vars) {
     executarNovamente == 'S' || executarNovamente == 's' ? openMenu(vars) : FileUtils::endProgram();
 }
 
-void codeHuffman(Variables &vars)
+void codeDecodeHuffman(Variables &vars)
 {
 
 }
 
-void decodeHuffman(Variables &vars)
+void codeDecodeLZ77(Variables &vars)
 {
+    unsigned int bufferWindow, dictionaryWindow;
+    //vector<Triple> triplas;
+    //vector<Question> tempVecQuestion;
+    //string tempStr;
 
-}
-
-void codeLZ77(Variables &vars)
-{
-
+    cout << "Codificacao por LZ77" << endl;
+    cout << "Infome o tamanho do dicionario: ";
+    cin >> dictionaryWindow;
+    cout << "Informe o tamanho do buffer: ";
+    cin >> bufferWindow;
+    LZ77 lz77(dictionaryWindow, bufferWindow);
     for (auto &itNs : vars.Ns)
     {
+        cout << "Codificacao de " << itNs << " questoes." << endl;
         vector<Question> tempVecQuestion = getVetQuestionsRand(vars.questionVector, itNs);
         string tempStr = getBodyNQuestions(tempVecQuestion);
-        //cout << tempStr << endl;
-        //string arquivoSemCompressao = "LZ77_SemCompressao_N_" + to_string(itNs) + ".txt";
-        FileUtils::writeToOutputFile("LZ77_SemCompressao_N_" + to_string(itNs) + ".txt", tempStr, false);
+        FileUtils::writeToOutputFile("LZ77_NaoCodificado_N_" + to_string(itNs) + ".txt", tempStr, false);
+        vector<Triple> triplas = lz77.compress(tempStr);
+        lz77.saveFile(triplas, "LZ77_Codificado_N_" + to_string(itNs) + ".txt");
+        FileUtils::writeToOutputFile("LZ77_Decodificado_N_" + to_string(itNs) + ".txt", lz77.decompressText(triplas), false);
     }
 }
 
-void decodeLZ77(Variables &vars)
+void codeDecodeLZ78(Variables &vars)
 {
 
 }
 
-void codeLZ78(Variables &vars)
-{
-
-}
-
-void decodeLZ78(Variables &vars)
-{
-
-}
-
-void codeLZW(Variables &vars)
-{
-
-}
-
-void decodeLZW(Variables &vars)
+void codeDecodeLZW(Variables &vars)
 {
 
 }
