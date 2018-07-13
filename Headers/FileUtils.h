@@ -32,7 +32,7 @@ public:
     // Comentado, pois nessa parte não usamos o arquivos de Tags
     //static void readFileTag(string path, vector<Tag> &tagList);
     //static void readFileAnswer(string path, vector<Answer> &answerList);
-    static void writeToOutputFile(const string &outputFileName, const string &text);
+    static void writeToOutputFile(const string &outputFileName, const string &text, bool append);
     static void endProgram();
     static void pauseScreen(bool continuar);
     static void showTop();

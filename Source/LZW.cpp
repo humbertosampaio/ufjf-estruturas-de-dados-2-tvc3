@@ -17,7 +17,7 @@ LZW::LZW()
     }
 }
 
-void LZW::compressText(string text)
+string LZW::compressText(string text)
 {
     string str, strRet;
     str.push_back(text[0]);
@@ -53,6 +53,7 @@ void LZW::compressText(string text)
     }
     strRet += str + " ";
     //cout << strRet;
+    return strRet;
 }
 
 void LZW::compressQuestions(vector<Question> questionList)

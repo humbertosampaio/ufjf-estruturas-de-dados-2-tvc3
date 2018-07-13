@@ -264,12 +264,16 @@ vector<int> FileUtils::readInputFile(string path)
         pauseScreen(true);
         endProgram();
     }
+    cout << "----------------------------------------------------" << endl;
+    cout << "Arquivo de entrada " << path << " lido com sucesso." << endl;
+    cout << "----------------------------------------------------" << endl;
     return vector;
 }
 
-void FileUtils::writeToOutputFile(const string &outputFileName, const string &text)
+void FileUtils::writeToOutputFile(const string &outputFileName, const string &text, bool append)
 {
-    ofstream writer(outputFileName, ios::app);
+    ofstream writer;
+    append ? writer.open(outputFileName, ios::app) : writer.open(outputFileName);
     if (writer.is_open())
     {
         writer << text << endl;
@@ -328,3 +332,4 @@ void FileUtils::showTop()
     cout << "---------------------------- INFORMACOES ----------------------------" << endl;
     pauseScreen(true);
 }
+

@@ -17,7 +17,7 @@ class LZW {
 public:
     LZW();
     ~LZW() = default;
-    void compressText(string text);
+    string compressText(string text);
     void compressQuestions(vector<Question> questionList);
 
 private:

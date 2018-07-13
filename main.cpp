@@ -9,6 +9,7 @@
 #include "Headers/LZ78.h"
 #include "Headers/LZW.h"
 
+#define RANDOM_SEED std::chrono::system_clock::now().time_since_epoch().count()
 
 using namespace std;
 
@@ -18,8 +19,11 @@ struct Variables
     /// Vectors com os dados importados dos arquivos
     vector<Question> questionVector;
 
+    /// Caminho dos arquivos de entrada Questions.csv e entrada.txt
     string path;
     string questionPath;
+
+    string strComprimida;
 
     /// Usados para a leitura do arquivo de Entrada
     vector<int> Ns;
@@ -48,6 +52,8 @@ struct Variables
     }
 };
 
+vector<Question> getVetQuestionsRand(vector<Question> &vetQuestions, const int &n);
+string getBodyNQuestions(vector<Question> &questionList);
 void openMenu(Variables &vars);
 void codeHuffman(Variables &vars);
 void decodeHuffman(Variables &vars);
@@ -63,7 +69,7 @@ void tests();
 
 int main(int argc, char **argv)
 {
-	string text = "bookkeeper";
+/*	string text = "bookkeeper";
 	//HuffmanTree* tree = new HuffmanTree(text);
 
 	LZW lz;
@@ -81,7 +87,7 @@ int main(int argc, char **argv)
 
 
 	//system("PAUSE");
-	return 0;
+	return 0;*/
 
 
 	///////////////////// main, entre outros
@@ -120,6 +126,14 @@ int main(int argc, char **argv)
     if (vars.questionVector.empty())
         FileUtils::readFileQuestion(vars.questionPath, vars.questionVector);
 
+    if(vars.Ns.empty())
+    {
+        vars.Ns = FileUtils::readInputFile("entrada.txt");
+        vars.N = vars.Ns.size();
+    }
+
+    FileUtils::clearFileContent("saida.txt");
+
     openMenu(vars);
 
     return 0;
@@ -131,7 +145,7 @@ int main(int argc, char **argv)
  */
 void openMenu(Variables &vars) {
     cout << "------------------------------------------------------------------------" << endl;
-    cout << "||        TRABALHO DE ESTRUTURA DE DADOS 2 - MENU DE ESCOLHAS         ||" << endl;
+    cout << "||         TRABALHO DE ESTRUTURA DE DADOS 2 - MENU DE OPCOES          ||" << endl;
     cout << "------------------------------------------------------------------------" << endl;
     cout << "||                 INSIRA O CODIGO DA OPCAO ESCOLHIDA                 ||" << endl;
     cout << "||       Opcao 0: Sair e encerrar a execucao                          ||" << endl;
@@ -152,28 +166,28 @@ void openMenu(Variables &vars) {
         case 0:
             FileUtils::endProgram();
         case 1:
-            //cod por huffm
+            codeHuffman(vars);
             break;
         case 2:
-            //decod por hufman
+            decodeHuffman(vars);
             break;
         case 3:
-            //cod por lz77
+            codeLZ77(vars);
             break;
         case 4:
-            //decod por lz77
+            decodeLZ77(vars);
             break;
         case 5:
-            //cod por lz78
+            codeLZ78(vars);
             break;
         case 6:
-            //decod por lz78
+            decodeLZ78(vars);
             break;
         case 7:
-            //decod por lzw
+            decodeLZW(vars);
             break;
         case 8:
-            //decod por lzw
+            decodeLZW(vars);
             break;
         case 9:
             tests();
@@ -207,6 +221,14 @@ void decodeHuffman(Variables &vars)
 void codeLZ77(Variables &vars)
 {
 
+    for (auto &itNs : vars.Ns)
+    {
+        vector<Question> tempVecQuestion = getVetQuestionsRand(vars.questionVector, itNs);
+        string tempStr = getBodyNQuestions(tempVecQuestion);
+        //cout << tempStr << endl;
+        //string arquivoSemCompressao = "LZ77_SemCompressao_N_" + to_string(itNs) + ".txt";
+        FileUtils::writeToOutputFile("LZ77_SemCompressao_N_" + to_string(itNs) + ".txt", tempStr, false);
+    }
 }
 
 void decodeLZ77(Variables &vars)
@@ -240,16 +262,23 @@ void tests()
     string str = "bananabofanaoanabafanabananananana";
 
     ///Testes Huffman
-    auto *huffman = new Huffman();
+    Huffman huffman;
+    string comprimidoHuffman = huffman.encode(str);
+    string descomprimidoHuffman = huffman.decode(comprimidoHuffman);
 
+    cout << "Testes Huffman:" << endl;
+    cout << "Original: " << str << endl;
+    cout << "Comprimido: " << comprimidoHuffman << endl;
+    cout << "Descomprimido: " << descomprimidoHuffman<< endl;
 
     ///Testes LZ77
-    auto *lz77 = new LZ77(8, 4);
-    vector<Triple> saida = lz77->compress(str);
-    string comprimido = lz77->saveFile(saida, "testeCompressaoLZ77.txt");
-    string descomprimeTriple = lz77->decompressText(saida);
-    string descomprimeString = lz77->decompressText(comprimido);
+    LZ77 lz77(6, 10);
+    vector<Triple> saidaLz77 = lz77.compress(str);
+    string comprimido = lz77.saveFile(saidaLz77, "testeCompressaoLZ77.txt");
+    string descomprimeTriple = lz77.decompressText(saidaLz77);
+    string descomprimeString = lz77.decompressText(comprimido);
 
+    cout << "Testes LZ77:" << endl;
     cout << "Original: " << str << endl;
     cout << "Comprimido: " << comprimido<< endl;
     cout << "Descomprimido por Triple: " << descomprimeTriple << endl;
@@ -257,9 +286,53 @@ void tests()
 
 
     ///Testes LZ78
-    auto *lz78 = new LZ78();
+    LZ78 lz78;
 
 
     ///Testes LZW
-    auto  * lzw = new LZW();
+    LZW lzw;
+    comprimido = lzw.compressText(str);
+    cout << "Testes LZW:" << endl;
+    cout << "Original: " << str << endl;
+    cout << "Comprimido: " << comprimido << endl;
+
+}
+
+string getBodyNQuestions(vector<Question> &questionList)
+{
+    string out;
+    for (auto &itVecQuestion  : questionList)
+    {
+        out += itVecQuestion.getBody();
+    }
+    return out;
+}
+
+vector<Question> getVetQuestionsRand(vector<Question> &vetQuestions, const int &n) {
+    /**
+     * ifdef utilizando #define para RANDOM_SEED feito no inicio do arquivo da main.cpp
+     * para escolher o metodo de geracao de seed que melhor se enquadr para Windows ou Linux
+     */
+    long seed = RANDOM_SEED;
+    std::mt19937 eng(seed); // seed the generator
+    uniform_int_distribution<unsigned long> distAleatoria(0, vetQuestions.size() - 1);///distribuicao uniforme aleatoria
+
+    vector<int> questionsIds; ///Usado para nao ter registro com id repetido
+    questionsIds.reserve((vetQuestions.size()));
+    for (auto &it : vetQuestions)
+        questionsIds.push_back(it.getQuestionId());
+
+    vector<Question> vetQuestionsAleatorio; /// Vector de questions gerados aleatoriamente
+    vetQuestionsAleatorio.reserve(n);
+
+    for (int i = 0; i < n; i++) {
+        unsigned int indice;
+        do {
+            indice = distAleatoria(eng);
+        } while (questionsIds[indice] == -1);
+        vetQuestionsAleatorio.push_back(vetQuestions[indice]);
+        questionsIds[indice] = -1;
+    }
+    //FileUtils::writeToOutputFile("saida.txt, "Seed: " + to_string(seed) + "\n", true);
+    return vetQuestionsAleatorio;
 }
