@@ -1,11 +1,14 @@
 #include <iostream>
 #include <string>
-#include "Headers/HuffmanTree.h"
-#include "Headers/HuffmanNode.h"
-#include "Headers/LZW.h"
-#include "Headers/Huffman.h"
 #include "Headers/Question.h"
 #include "Headers/FileUtils.h"
+#include "Headers/HuffmanTree.h"
+#include "Headers/HuffmanNode.h"
+#include "Headers/Huffman.h"
+#include "Headers/LZ77.h"
+#include "Headers/LZ78.h"
+#include "Headers/LZW.h"
+
 
 using namespace std;
 
@@ -54,6 +57,7 @@ void codeLZ78(Variables &vars);
 void decodeLZ78(Variables &vars);
 void codeLZW(Variables &vars);
 void decodeLZW(Variables &vars);
+void tests();
 
 
 
@@ -139,6 +143,7 @@ void openMenu(Variables &vars) {
     cout << "||       Opcao 6: Decodificação por LZ78                              ||" << endl;
     cout << "||       Opcao 7: Codificação por LZW                                 ||" << endl;
     cout << "||       Opcao 8: Decodificação por LZW                               ||" << endl;
+    cout << "||       Opcao 9: Testes                                              ||" << endl;
     cout << "||--------------------------------------------------------------------||" << endl;
     cout << "||     Opcao: ";
     cin >> vars.entry;
@@ -170,6 +175,9 @@ void openMenu(Variables &vars) {
         case 8:
             //decod por lzw
             break;
+        case 9:
+            tests()
+            break;
         default:
             cout << "Opcao invalida. Tente novamente:" << endl;
             openMenu(vars);
@@ -184,4 +192,74 @@ void openMenu(Variables &vars) {
         cin >> executarNovamente;
     }
     executarNovamente == 'S' || executarNovamente == 's' ? openMenu(vars) : FileUtils::endProgram();
+}
+
+void codeHuffman(Variables &vars)
+{
+
+}
+
+void decodeHuffman(Variables &vars)
+{
+
+}
+
+void codeLZ77(Variables &vars)
+{
+
+}
+
+void decodeLZ77(Variables &vars)
+{
+
+}
+
+void codeLZ78(Variables &vars)
+{
+
+}
+
+void decodeLZ78(Variables &vars)
+{
+
+}
+
+void codeLZW(Variables &vars)
+{
+
+}
+
+void decodeLZW(Variables &vars)
+{
+
+}
+
+void tests()
+{
+    //String original para ser usada nos testes
+    string str = "bananabofanaoanabafanabananananana";
+
+    ///Testes Huffman
+    auto *huffman = new Huffman();
+
+
+    ///Testes LZ77
+    auto *lz77 = new LZ77(8, 4);
+    vector<Triple> saida = lz77->compress(str);
+    string comprimido = lz77->saveFile(saida, "testeCompressaoLZ77.txt");
+    string descomprimeTriple = lz77->decompressText(saida);
+    string descomprimeString = lz77->decompressText(comprimido);
+
+    cout << "Original: " << str << endl;
+    cout << "Comprimido: " << comprimido<< endl;
+    cout << "Descomprimido por Triple: " << descomprimeTriple << endl;
+    cout << "Descomprimido por String: " << descomprimeString << endl;
+
+
+    ///Testes LZ78
+    auto *lz78 = new LZ78();
+
+
+    ///Testes LZW
+    auto  * lzw = new LZW();
 }
