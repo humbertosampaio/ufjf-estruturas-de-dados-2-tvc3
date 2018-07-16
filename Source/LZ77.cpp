@@ -3,7 +3,7 @@
 //
 
 #include "../Headers/LZ77.h"
-
+#include <chrono>
 
 
 LZ77::LZ77(unsigned int dictLength, unsigned int bufferLength)
@@ -15,13 +15,15 @@ LZ77::~LZ77() = default;
 ///Função que comprime um texto a partir de uma string e retorna uma vetor de triplas
 vector<Triple> LZ77::compress(string &origText)
 {
+	clock_t tStart = clock();
+
     /**
      * posDict: posicao relativa ao primeiro caracter da sequencia a codificar
      * size: quantidade de caracteres que a sequencia a codificar possui
      * Variaveis auxiliares de posDict e size para buscar a maior cadeia
      */
     vector<Triple> tripleVect;
-    int posDictAux=0, posDict=0, size=0, sizeAux;
+    int posDictAux=0, posDict=0, size=0, sizeAux, index = 1;
     for(int i = 0; i < origText.size(); ++i, posDictAux=posDict=size=0)
     {
         // Comprime a maior cadeia encontrada no dicionario
@@ -52,10 +54,14 @@ vector<Triple> LZ77::compress(string &origText)
         // Atualiza o iterador da string, para o próximo caracter não codificado
         i += size;
 
+		++index;
+		if (index % 1000000 == 0)
+			cout << "Compactacao: " << index << " / " << origText.length() << " caracteres processados\r";
         //Triple auxInserir(j, s, origText[i]);
         //tripleVect.push_back(auxInserir);
         tripleVect.emplace_back(posDict, size, origText[i]);
     }
+	cout << endl << "Tempo gasto na compressao: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << "s" << endl << endl;
     return tripleVect;
 }
 
@@ -69,8 +75,8 @@ string LZ77::decompressText(string &textCompressed)
     int triplaPosicao;
     int triplaTamanho;
     char triplaChar;
-    int posOutput=0;
-    for(int i = 0; i < textCompressed.size(); i++)
+    int posOutput=0, index = 1;
+    for(int i = 0; i < textCompressed.size(); ++i)
     {
         i++;
         aux = "";
@@ -93,6 +99,10 @@ string LZ77::decompressText(string &textCompressed)
         }
         output += triplaChar;
         ++posOutput;
+
+		++index;
+		if (index % 1000000 == 0)
+			cout << endl << "Compactacao: " << index << " / " << textCompressed.length() << " caracteres processados\r";
     }
     return output;
 }
@@ -100,6 +110,8 @@ string LZ77::decompressText(string &textCompressed)
 ///Função que descomprime um texto a partir de um vetor de triplas
 string LZ77::decompressText(vector<Triple> &tripleVect)
 {
+	clock_t tStart = clock();
+
     string output;
     int posOutput=0;
     for (auto &itTriple : tripleVect)
@@ -114,6 +126,7 @@ string LZ77::decompressText(vector<Triple> &tripleVect)
         output += itTriple.c;
         ++posOutput;
     }
+	cout << "Tempo gasto na descompressao: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << "s" << endl << endl;
     return output;
 }
 

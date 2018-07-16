@@ -5,11 +5,7 @@
 
 using namespace std;
 
-LZ78::LZ78()
-{
-}
-
-string LZ78::compress(string text)
+string LZ78::compress(string &text)
 {
 	clock_t tStart = clock();
 
@@ -40,16 +36,9 @@ string LZ78::compress(string text)
 
 		strIt++;
 
-		/*if (compressDictionary.size() >= MAX_DICTIONARY_SIZE)
-		{
-			compressDictionary.clear();
-			compressDictionary.reserve(MAX_DICTIONARY_SIZE);
-			lastCompressDicIndex = 1;
-		}*/
-
 		++index;
 		if (index % 1000000 == 0)
-			cout << "Compactacao: " << index << " / " << text.length() << "\r";
+			cout << "Compactacao: " << index << " / " << text.length() << " caracteres processados\r";
 	}
 
 	if (tempStr != "")
@@ -57,8 +46,7 @@ string LZ78::compress(string text)
 		encodedStr += getEncodedSequence(tempStr, "");
 	}
 
-
-	cout << "\tTempo gasto na compressao: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << "s" << endl << endl;
+	cout << endl << "Tempo gasto na compressao: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << "s" << endl << endl;
 
 	compressDictionary.clear();
 	return encodedStr;
@@ -75,7 +63,7 @@ string LZ78::getEncodedSequence(string tempString, string nextChar)
 	return (to_string(strCode) + nextChar);
 }
 
-string LZ78::decompress(string encodedText)
+string LZ78::decompress(string &encodedText)
 {
 	clock_t tStart = clock();
 
@@ -85,7 +73,7 @@ string LZ78::decompress(string encodedText)
 	string strDicCode, decodedString;
 	string c;
 
-	int index = 0;
+	int index = 1;
 
 	while (strIt != encodedText.end())
 	{
@@ -120,19 +108,12 @@ string LZ78::decompress(string encodedText)
 		strDicCode.clear();
 		c.clear();
 
-		/*if (decompressDictionary.size() >= MAX_DICTIONARY_SIZE)
-		{
-			decompressDictionary.clear();
-			decompressDictionary.reserve(MAX_DICTIONARY_SIZE);
-			lastDecompressDicIndex = 1;
-		}*/
-
 		++index;
 		if (index % 1000000 == 0)
-			cout << "Descompactacao: " << index << " / " << encodedText.length() << "\r";
+			cout << "Descompactacao: " << index << " / " << encodedText.length() << " caracteres processados\r";
 	}
 
-	cout << "\tTempo gasto na descompressao: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << "s" << endl << endl;
+	cout << endl << "Tempo gasto na descompressao: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << "s" << endl << endl;
 
 	decompressDictionary.clear();
 	return decodedString;

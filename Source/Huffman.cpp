@@ -2,6 +2,7 @@
 //
 
 #include "../Headers/Huffman.h"
+#include <chrono>
 
 Huffman::Huffman() {
 
@@ -96,8 +97,11 @@ Node* Huffman::getSmallerNode() {
 
 void Huffman::generateTree() {
     Node* n;
+	int i;
 
     while(firstElement != nullptr){
+		if (i % 1000000 == 0)
+			cout << "Gerando arvore: " << i << "\r";
         n = new Node();
         n->setLeft(getSmallerNode());
         n->setRight(getSmallerNode());
@@ -106,16 +110,20 @@ void Huffman::generateTree() {
         lastElement = n;
     }
 
+	cout << endl;
     firstElement = n;
 }
 
 string Huffman::generateStringCodes(string s){
-
+	int i = 0;
     string *code = new string;
     string::iterator it = s.begin();
     while(it != s.end()){
-        *code += ascii[*it];
-        it++;
+		if (i % 1000000 == 0)
+			cout << "Gerando codigos: " << i << "\r";
+        *code += ascii[(unsigned char)*it];
+        ++it;
+		++i;
     }
     return *code;
 }
@@ -134,15 +142,12 @@ void Huffman::generateCode(string s,Node*n){
                 s.push_back('1');
                 generateCode(s,n->getRight());
                 s.erase(s.end()-1);
-
             }
             if(n->getLeft() != nullptr){
 
                 s.push_back('0');
                 generateCode(s,n->getLeft());
                 s.erase(s.end()-1);
-
-
             }
 
         }
@@ -151,22 +156,30 @@ void Huffman::generateCode(string s,Node*n){
 
 }
 
-string Huffman::encode(string text) {
+string Huffman::encode(string &text) {
+
+	clock_t tStart = clock();
+
     string code;
 
     if(firstElement == nullptr){
 
         string::iterator it;
+		int i = 0;
         it = text.begin();
 
         while(it != text.end()){
             insert(*it, 1);
-            it++;
+			if (i % 1000000 == 0)
+				cout << "Inserindo caracteres na arvore: " << i << " / " << text.length() << "\r";
+            ++it;
+			++i;
         }
-
+		cout << endl;
         generateTree();
         generateCode(code, firstElement);
 
+		cout << endl << "Tempo gasto na compressao: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << "s" << endl << endl;
         return generateStringCodes(text);
     }
 
@@ -175,12 +188,13 @@ string Huffman::encode(string text) {
 
 
 
-string Huffman::decode(string text){
+string Huffman::decode(string &text){
+	clock_t tStart = clock();
 
     Node*aux = firstElement;
     string::iterator it = text.begin();
     string decode;
-    while(it != text.end()+1){
+    while(it != text.end()){
 
         if(aux->getCharacter() != 0){
 
@@ -202,8 +216,9 @@ string Huffman::decode(string text){
 
         }
     }
-    return decode;
+	cout << endl << "Tempo gasto na descompressao: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << "s" << endl << endl;
 
+    return decode;
 }
 
 void Huffman::deleteHuffman(Node *node) {
@@ -213,55 +228,3 @@ void Huffman::deleteHuffman(Node *node) {
         delete node;
     }
 }
-
-/*
-void Huffman::compressQuestions(vector<Question> &questionList){
-    string question;
-    int size = questionList.size();
-
-    //question.reserve(880000000);
-
-
-    for(int i = 0; i < 10000; i++){
-        question.append(questionList[i].getBody());
-    }
-
-
-
-    cout << "Teste: ";
-
-    string codificacao = this->encode(question);
-
-    cout << "Codificacao: " << codificacao << endl;
-
-    cout << "Decodificacao: " << this->decode(codificacao);
-}
-
-string Huffman::encode(vector<Question> &questionList, int n) {
-    string code;
-    string finalText;
-
-    if(firstElement == nullptr){
-
-        for(int i = 0; i < n; i++) {
-            string text = questionList[i].getBody();
-            string::iterator it;
-            it = text.begin();
-
-            while (it != text.end()) {
-                insert(*it, 1);
-                it++;
-            }
-
-            finalText += questionList[i].getBody();
-        }
-
-        generateTree();
-        generateCode(code, firstElement);
-
-        return generateStringCodes(finalText);
-    }
-
-    return code;
-}
-*/

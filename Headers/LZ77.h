@@ -19,8 +19,6 @@ private:
     unsigned int dictLength;
     unsigned int bufferLength;
 
-
-
 public:
     LZ77(unsigned int dictLength, unsigned int bufferLength);
     ~LZ77();

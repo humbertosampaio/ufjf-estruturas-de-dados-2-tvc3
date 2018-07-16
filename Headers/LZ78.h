@@ -8,10 +8,10 @@ using namespace std;
 class LZ78
 {
 	public:
-	LZ78();
+	LZ78() = default;
 	~LZ78() = default;
-	string compress(string text);
-	string decompress(string encodedText);
+	string compress(string &text);
+	string decompress(string &encodedText);
 	
 	private:
 	unordered_map<string, unsigned int> compressDictionary;
@@ -23,7 +23,7 @@ class LZ78
 	unsigned int lastDecompressDicIndex;
 
 	const string NUMERIC_SEPARATOR = "~¨";
-	const int MAX_DICTIONARY_SIZE = 1000000;
+	const int MAX_DICTIONARY_SIZE = 58132624; // Tamanho máximo que o arquivo Questions.csv ocupa
 	bool isNumeric(char c);
 	bool isNumeric(string s);
 	unsigned int toUnsignedInt(string number);

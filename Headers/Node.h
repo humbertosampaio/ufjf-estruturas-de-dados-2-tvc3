@@ -40,7 +40,7 @@ public:
         Node::next = next;
     }
 
-    char getCharacter() const {
+    unsigned char getCharacter() const {
         return character;
     }
 

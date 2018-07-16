@@ -2,8 +2,6 @@
 #include <string>
 #include "Headers/Question.h"
 #include "Headers/FileUtils.h"
-#include "Headers/HuffmanTree.h"
-#include "Headers/HuffmanNode.h"
 #include "Headers/Huffman.h"
 #include "Headers/LZ77.h"
 #include "Headers/LZ78.h"
@@ -56,6 +54,7 @@ struct Variables
 
 vector<Question> getVetQuestionsRand(vector<Question> &vetQuestions, const int &n);
 string getBodyNQuestions(vector<Question> &questionList);
+string getBodyNQuestions(vector<Question> &questionList, int qtd);
 void openMenu(Variables &vars);
 void codeDecodeHuffman(Variables &vars);
 void codeDecodeLZ77(Variables &vars);
@@ -66,83 +65,45 @@ void tests();
 
 
 int main(int argc, char **argv) {
-
-    ///TESTES --------------------------
-/*	string text = "bookkeeper";
-	//HuffmanTree* tree = new HuffmanTree(text);
-
-	LZW lz;
-	vector<Question> q;
-	FileUtils::readFileQuestion("C:/Users/Luis/Desktop/Trabalho_ED2/Questions.csv", q);
-    lz.compressQuestions(q);
-
-	Huffman hf;
-
-	string teste = hf.encode("bananabanabofana");
-
-	cout << hf.decode(teste);
-
-	hf.compressQuestions(q);
-
-
-	//system("PAUSE");
-	return 0;*/
-
-    Huffman h;
-    vector<Question> q;
-    char c;
-
-    FileUtils::readFileQuestion("C:/Users/Luis/Desktop/Trabalho_ED2/Questions.csv", q);
-    string teste = h.encode(q, 50000);
-    string d = h.decode(teste);
-    cout << d << endl;
-    cin >> c;
-
-	///////////////////// main, entre outros
+	Variables vars;
     FileUtils::showTop();
 
     if (argc != 2 && argc != 1) {
         cout << "Erro na chamada do programa. Informe corretamente o path (caminho) padrao inicial." << endl;
-        cout << "Ou deixe em branco, caso queira considerar o diretorio do executavel como path" << endl;
+        cout << "Ou deixe em branco, caso queira considerar o diretorio do executavel como path." << endl;
         cout << R"(Certifique-se de no path estar o arquivo "entrada.txt" e a pasta "pythonquestions".)" << endl;
-        cout
-                << R"(Eh necessario que os arquivos "Answers.csv", "Questions.csv" e "Tags.csv" estejam no diretorio "pythonquestions".)"
-                << endl;
+        cout << R"(Eh necessario que o arquivo "Questions.csv" esteja no diretorio "pythonquestions".)" << endl;
         cout << "Formato a inserir na linha de comando para execucao do algoritmo:" << endl;
         cout << "<./executavel> <pathDoDiretorioInicial>" << endl;
         FileUtils::endProgram();
         return 0;
     }
 
-    Variables vars;
-    /// Se o quandtidade de argumentos é 1, nao foi informado o caminho, entao passa uma string vazia
-    /// Do contrário, passa o caminho passado por parametro
+    // Se o quandtidade de argumentos é 1, nao foi informado o caminho, entao passa uma string vazia
+    // Do contrário, passa o caminho passado por parametro
     vars.entryPath(argc == 1 ? "" : argv[1]);
 
-    /**
- * Limpa os arquivos de saida, para nao conter lixos de outra execução
- * Caso queira salvar os resultados da saída, eh necessário copiar os arquivos
- */
+    /*
+	 * Limpa os arquivos de saida, para nao conter lixos de outra execução
+	 * Caso queira salvar os resultados da saída, eh necessário copiar os arquivos
+	 */
     //FileUtils::clearFileContent("saidaInsercao.txt");
     //FileUtils::clearFileContent("saidaBusca.txt");
     //FileUtils::clearFileContent("saidaRemocao.txt");
+    //FileUtils::clearFileContent("saida.txt");
 
-    /**a
+    /*
      * Leitura dos arquivos de questões e de respostas.
      * O arquivo de Tags nao eh usado nessa parte do trabalho
      */
     if (vars.questionVector.empty())
         FileUtils::readFileQuestion(vars.questionPath, vars.questionVector);
 
-
-
     if(vars.Ns.empty())
     {
         vars.Ns = FileUtils::readInputFile("entrada.txt");
         vars.N = vars.Ns.size();
     }
-
-    FileUtils::clearFileContent("saida.txt");
 
     openMenu(vars);
 
@@ -160,12 +121,12 @@ void openMenu(Variables &vars) {
     cout << "||                 INSIRA O CODIGO DA OPCAO ESCOLHIDA                 ||" << endl;
     cout << "||       Opcao 0: Sair e encerrar a execucao                          ||" << endl;
     cout << "||       Opcao 1: Codificacao e Decodificacao por Huffman             ||" << endl;
-    cout << "||       Opcao 2: Codificação e Decodificacao por LZ77                ||" << endl;
-    cout << "||       Opcao 3: Codificação e Decodificacao por LZ7                 ||" << endl;
-    cout << "||       Opcao 4: Codificação e Decodificacao por LZW                 ||" << endl;
+    cout << "||       Opcao 2: Codificacao e Decodificacao por LZ77                ||" << endl;
+    cout << "||       Opcao 3: Codificacao e Decodificacao por LZ78                ||" << endl;
+    cout << "||       Opcao 4: Codificacao e Decodificacao por LZW                 ||" << endl;
     cout << "||       Opcao 5: Testes                                              ||" << endl;
     cout << "||--------------------------------------------------------------------||" << endl;
-    cout << "||       Opcao: ";
+    cout << "||       Opcao: " << endl;
     cin >> vars.entry;
     cout << "||--------------------------------------------------------------------||" << endl;
     switch (vars.entry) {
@@ -194,8 +155,9 @@ void openMenu(Variables &vars) {
     char executarNovamente;
     cout << "Executar novamente? (S/N)" << endl;
     cin >> executarNovamente;
-    while (executarNovamente != 'N' && executarNovamente != 'n' && executarNovamente != 'S' &&
-           executarNovamente != 's') {
+    while (executarNovamente != 'N' && executarNovamente != 'S' && 
+		   executarNovamente != 'n' && executarNovamente != 's') 
+	{
         cout << "Entrada invalida! Tente novamente: ";
         cin >> executarNovamente;
     }
@@ -204,7 +166,25 @@ void openMenu(Variables &vars) {
 
 void codeDecodeHuffman(Variables &vars)
 {
+	cout << "Codificacao por Huffman" << endl;
+	for (auto &itNs : vars.Ns)
+	{
+		Huffman h;
+		cout << "Codificacao de " << itNs << " questoes." << endl;
+		vector<Question> tempVecQuestion = getVetQuestionsRand(vars.questionVector, itNs);
+		string str1 = getBodyNQuestions(tempVecQuestion);
+		tempVecQuestion.clear();
+		FileUtils::writeToOutputFile("Huffman_NaoCodificado_N_" + to_string(itNs) + ".txt", str1, false);
 
+		string str2 = h.encode(str1);
+		str1.clear();
+		FileUtils::writeToOutputFile("Huffman_Codificado_N_" + to_string(itNs) + ".txt", str2, false);
+
+		str1 = h.decode(str2);
+		str2.clear();
+		FileUtils::writeToOutputFile("Huffman_Decodificado_N_" + to_string(itNs) + ".txt", str1, false);
+		str1.clear();
+	}
 }
 
 void codeDecodeLZ77(Variables &vars)
@@ -223,23 +203,62 @@ void codeDecodeLZ77(Variables &vars)
     for (auto &itNs : vars.Ns)
     {
         cout << "Codificacao de " << itNs << " questoes." << endl;
-        vector<Question> tempVecQuestion = getVetQuestionsRand(vars.questionVector, itNs);
-        string tempStr = getBodyNQuestions(tempVecQuestion);
+		vector<Question> tempVecQuestion = getVetQuestionsRand(vars.questionVector, itNs);
+		string tempStr = getBodyNQuestions(tempVecQuestion);
+		tempVecQuestion.clear();
         FileUtils::writeToOutputFile("LZ77_NaoCodificado_N_" + to_string(itNs) + ".txt", tempStr, false);
         vector<Triple> triplas = lz77.compress(tempStr);
         lz77.saveFile(triplas, "LZ77_Codificado_N_" + to_string(itNs) + ".txt");
         FileUtils::writeToOutputFile("LZ77_Decodificado_N_" + to_string(itNs) + ".txt", lz77.decompressText(triplas), false);
+		triplas.clear();
     }
 }
 
 void codeDecodeLZ78(Variables &vars)
 {
+	cout << "Codificacao por LZ78" << endl;
+	LZ78 lz;
+	for (auto &itNs : vars.Ns)
+	{
+		cout << "Codificacao de " << itNs << " questoes." << endl;
+		vector<Question> tempVecQuestion = getVetQuestionsRand(vars.questionVector, itNs);
+		string str1 = getBodyNQuestions(tempVecQuestion);
+		tempVecQuestion.clear();
+		FileUtils::writeToOutputFile("LZ78_NaoCodificado_N_" + to_string(itNs) + ".txt", str1, false);
 
+		string str2 = lz.compress(str1);
+		str1.clear();
+		FileUtils::writeToOutputFile("LZ78_Codificado_N_" + to_string(itNs) + ".txt", str2, false);
+
+		str1 = lz.decompress(str2);
+		str2.clear();
+		FileUtils::writeToOutputFile("LZ78_Decodificado_N_" + to_string(itNs) + ".txt", str1, false);
+		str1.clear();
+	}
 }
 
 void codeDecodeLZW(Variables &vars)
 {
+	cout << "Codificacao por LZ78" << endl;
+	LZW lz;
+	for (auto &itNs : vars.Ns)
+	{
+		cout << "Codificacao de " << itNs << " questoes." << endl;
+		vector<Question> tempVecQuestion = getVetQuestionsRand(vars.questionVector, itNs);
+		string str1 = getBodyNQuestions(tempVecQuestion);
+		tempVecQuestion.clear();
+		FileUtils::writeToOutputFile("LZW_NaoCodificado_N_" + to_string(itNs) + ".txt", str1, false);
 
+		string str2 = lz.compressText(str1);
+		str1.clear();
+		FileUtils::writeToOutputFile("LZW_Codificado_N_" + to_string(itNs) + ".txt", str2, false);
+
+		// comentado pois ainda nao existe funcao de descompressao
+		/*str1 = lz.decompress(str2);
+		str2.clear();
+		FileUtils::writeToOutputFile("LZ78_Decodificado_N_" + to_string(itNs) + ".txt", str1, false);
+		str1.clear();*/
+	}
 }
 
 void tests()
@@ -294,6 +313,16 @@ string getBodyNQuestions(vector<Question> &questionList)
     return out;
 }
 
+string getBodyNQuestions(vector<Question> &questionList, int qtd)
+{
+	string out;
+	for (int i = 0; i < qtd; i++)
+	{
+		out += questionList[i].getBody();
+	}
+	return out;
+}
+
 vector<Question> getVetQuestionsRand(vector<Question> &vetQuestions, const int &n) {
     /**
      * ifdef utilizando #define para RANDOM_SEED feito no inicio do arquivo da main.cpp
@@ -319,6 +348,5 @@ vector<Question> getVetQuestionsRand(vector<Question> &vetQuestions, const int &
         vetQuestionsAleatorio.push_back(vetQuestions[indice]);
         questionsIds[indice] = -1;
     }
-    //FileUtils::writeToOutputFile("saida.txt, "Seed: " + to_string(seed) + "\n", true);
     return vetQuestionsAleatorio;
 }
