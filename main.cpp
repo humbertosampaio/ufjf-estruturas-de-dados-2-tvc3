@@ -6,6 +6,7 @@
 #include "Headers/Huffman.h"
 #include "Headers/Question.h"
 #include "Headers/FileUtils.h"
+#include "Headers/TrieTernaria.h"
 
 using namespace std;
 
@@ -15,18 +16,18 @@ int main()
 	//HuffmanTree* tree = new HuffmanTree(text);
 
 	LZW lz;
+
 	vector<Question> q;
-	FileUtils::readFileQuestion("C:/Users/Luis/Desktop/Trabalho_ED2/Questions.csv", q);
-    lz.compressQuestions(q);
+	//FileUtils::readFileQuestion("/home/edson/pythonquestions/Questions.csv", q);
+    lz.compressText("bananabanabofana");
+    //lz.compressQuestions(q);
 
 	Huffman hf;
-
-	string teste = hf.encode("bananabanabofana");
-
-	cout << hf.decode(teste);
-
-	hf.compressQuestions(q);
-
+    /*
+	string teste = hf.encode(q[0].getBody());
+    cout << teste;
+	cout << hf.decode(teste);*/
+	//hf.compressQuestions(q);
 	//system("PAUSE");
 	return 0;
 }

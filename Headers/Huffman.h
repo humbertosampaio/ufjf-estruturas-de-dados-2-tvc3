@@ -18,7 +18,7 @@ public:
     Huffman();
     ~Huffman();
 
-    string encode(string text);
+    string encode(string& text);
     string decode(string text);
     void generateTree();
     void compressQuestions(vector<Question> questionList);

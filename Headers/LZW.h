@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <vector>
 #include "Question.h"
+#include "TrieTernaria.h"
 
 using namespace std;
 
@@ -22,6 +23,7 @@ public:
 
 private:
     unordered_map<string, unsigned int> dictionary;
+    TrieTernaria _dictionary;
     unsigned int index;
 
 };

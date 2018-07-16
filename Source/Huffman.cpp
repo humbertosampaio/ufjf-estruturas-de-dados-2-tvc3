@@ -218,7 +218,7 @@ void Huffman::generateCode(string s,Node*n){
 
 }
 
-string Huffman::encode(string text) {
+string Huffman::encode(string& text) {
     string code;
 
     if(firstElement == nullptr){
@@ -274,11 +274,11 @@ string Huffman::decode(string text){
 
 
 void Huffman::compressQuestions(vector<Question> questionList){
-    for (int i = 0; i < 100; ++i)
-    {
-        encode(questionList[i].getBody());
-        cout << i;
-    }
+    string s;
+    for (int i = 0; i < questionList.size(); ++i)
+        s += questionList[i].getBody();
+
+    cout << decode(encode(s));
 }
 
 
