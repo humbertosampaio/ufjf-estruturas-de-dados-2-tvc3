@@ -65,8 +65,7 @@ void tests();
 
 
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 
     ///TESTES --------------------------
 /*	string text = "bookkeeper";
@@ -89,6 +88,15 @@ int main(int argc, char **argv)
 	//system("PAUSE");
 	return 0;*/
 
+    Huffman h;
+    vector<Question> q;
+    char c;
+
+    FileUtils::readFileQuestion("C:/Users/Luis/Desktop/Trabalho_ED2/Questions.csv", q);
+    string teste = h.encode(q, 50000);
+    string d = h.decode(teste);
+    cout << d << endl;
+    cin >> c;
 
 	///////////////////// main, entre outros
     FileUtils::showTop();

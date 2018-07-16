@@ -19,9 +19,10 @@ public:
     ~Huffman();
 
     string encode(string text);
+    string encode(vector<Question> &questionList, int n);
     string decode(string text);
     void generateTree();
-    void compressQuestions(vector<Question> questionList);
+    void compressQuestions(vector<Question> &questionList);
 
 private:
     void insert(char c, int f); //Insere o caractere
@@ -29,9 +30,7 @@ private:
     void removeNode(Node* node);
     string generateStringCodes(string text); //Gera o código de uma string a partir da árvore
     void generateCode(string text, Node* node); //
-    string lowerLetters[26];
-    string upperLetters[26];
-    string accents[5]; //virgula, ponto, espaço, interrogação, exclamação
+    string ascii[256];
     Node* firstElement;
     Node* lastElement;
     void deleteHuffman(Node* node);

@@ -114,40 +114,7 @@ string Huffman::generateStringCodes(string s){
     string *code = new string;
     string::iterator it = s.begin();
     while(it != s.end()){
-
-        if(*it >= 97 && *it <= 122){
-
-            *code += lowerLetters[*it - 97];
-
-        }else if(*it >= 65 && *it <= 90){
-
-            *code += upperLetters[*it - 65];
-
-        }else{
-
-            if(*it == ','){
-
-                *code += accents[0];
-
-            }else if(*it == '.'){
-
-                *code += accents[1];
-
-            }else if(*it == ' '){
-
-                *code += accents[2];
-
-            }else if(*it == '?'){
-
-                *code += accents[3];
-
-            }else if(*it == '!'){
-
-                *code += accents[4];
-
-            }
-
-        }
+        *code += ascii[*it];
         it++;
     }
     return *code;
@@ -159,41 +126,7 @@ void Huffman::generateCode(string s,Node*n){
     if(n != nullptr){
 
         if(n->getCharacter() != 0){
-
-            if(n->getCharacter() >= 97 && n->getCharacter() <= 122){
-
-                lowerLetters[n->getCharacter() - 97] = s;
-
-            }else if(n->getCharacter() >= 65 && n->getCharacter() <=90){
-
-                upperLetters[n->getCharacter() - 65] = s;
-
-            }else{
-
-                if(n->getCharacter() == ','){
-
-                    accents[0] = s;
-
-                }else if(n->getCharacter() == '.'){
-
-                    accents[1] = s;
-
-                }else if(n->getCharacter() == ' '){
-
-                    accents[2] = s;
-
-                }else if(n->getCharacter() == '?'){
-
-                    accents[3] = s;
-
-                }else if(n->getCharacter() == '!'){
-
-                    accents[4] = s;
-
-                }
-
-            }
-
+            ascii[n->getCharacter()] = s;
         }else{
 
             if(n->getRight() != nullptr){
@@ -241,6 +174,7 @@ string Huffman::encode(string text) {
 }
 
 
+
 string Huffman::decode(string text){
 
     Node*aux = firstElement;
@@ -272,16 +206,6 @@ string Huffman::decode(string text){
 
 }
 
-
-void Huffman::compressQuestions(vector<Question> questionList){
-    for (int i = 0; i < 100; ++i)
-    {
-        encode(questionList[i].getBody());
-        cout << i;
-    }
-}
-
-
 void Huffman::deleteHuffman(Node *node) {
     if(node != nullptr){
         deleteHuffman(node->getLeft());
@@ -289,3 +213,55 @@ void Huffman::deleteHuffman(Node *node) {
         delete node;
     }
 }
+
+/*
+void Huffman::compressQuestions(vector<Question> &questionList){
+    string question;
+    int size = questionList.size();
+
+    //question.reserve(880000000);
+
+
+    for(int i = 0; i < 10000; i++){
+        question.append(questionList[i].getBody());
+    }
+
+
+
+    cout << "Teste: ";
+
+    string codificacao = this->encode(question);
+
+    cout << "Codificacao: " << codificacao << endl;
+
+    cout << "Decodificacao: " << this->decode(codificacao);
+}
+
+string Huffman::encode(vector<Question> &questionList, int n) {
+    string code;
+    string finalText;
+
+    if(firstElement == nullptr){
+
+        for(int i = 0; i < n; i++) {
+            string text = questionList[i].getBody();
+            string::iterator it;
+            it = text.begin();
+
+            while (it != text.end()) {
+                insert(*it, 1);
+                it++;
+            }
+
+            finalText += questionList[i].getBody();
+        }
+
+        generateTree();
+        generateCode(code, firstElement);
+
+        return generateStringCodes(finalText);
+    }
+
+    return code;
+}
+*/
