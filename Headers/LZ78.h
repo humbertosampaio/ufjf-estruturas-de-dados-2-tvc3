@@ -1,13 +1,32 @@
-//
-// Created by viniman on 6/26/18.
-//
-
 #ifndef TRABED2PART3_LZ78_H
 #define TRABED2PART3_LZ78_H
 
+#include <unordered_map>
 
-class LZ78 {
+using namespace std;
 
+class LZ78
+{
+	public:
+	LZ78();
+	~LZ78() = default;
+	string compress(string text);
+	string decompress(string encodedText);
+	
+	private:
+	unordered_map<string, unsigned int> compressDictionary;
+	string getEncodedSequence(string tempString, string nextChar);
+	unsigned int lastCompressDicIndex;
+
+	unordered_map<unsigned int, string> decompressDictionary;
+	string getDecodedSequence(string strDictionaryCode, string nextCharSequence);
+	unsigned int lastDecompressDicIndex;
+
+	const string NUMERIC_SEPARATOR = "~¨";
+	const int MAX_DICTIONARY_SIZE = 1000000;
+	bool isNumeric(char c);
+	bool isNumeric(string s);
+	unsigned int toUnsignedInt(string number);
 };
 
 
