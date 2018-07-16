@@ -12,40 +12,42 @@ LZW::LZW()
     for (index; index < 256; index++)
     {
         s = (char)index;
-        _dictionary.insere(s);
+        dictionary.insere(s);
     }
 }
 
-void LZW::compressText(string text)
+string LZW::compressText(string text)
 {
     string str, strRet;
     str.push_back(text[0]);
-    unordered_map<string,unsigned int>::iterator it;
     unsigned long int dictionaryId;
     for (auto i = text.begin()+1; i != text.end(); ++i)
     {
-        dictionaryId = _dictionary.busca(str+(*i));
+        dictionaryId = dictionary.busca(str+(*i));
         if (dictionaryId) {
             str.push_back(*i);
             continue;
         }
         else {
-            strRet += to_string(_dictionary.busca(str)) + " ";
+            strRet += to_string(dictionary.busca(str)) + " ";
             str.push_back(*i);
-            _dictionary.insere(str);
+            dictionary.insere(str);
             str.clear();
             str.push_back(*i);
         }
     }
+    return strRet;
 }
 
-void LZW::compressQuestions(vector<Question> questionList)
+void LZW::compressQuestions(vector<Question> questionList, string savePath)
 {
-
+    ofstream a;
+    a.open(savePath, ios_base::app);
     for (int i = 0; i < questionList.size(); ++i)
     {
-        compressText(questionList[i].getBody());
-        cout << i << endl;
+        a << compressText(questionList[i].getBody());
+        if (i%1000 == 0)
+            cout << i << endl;
     }
-    cout << dictionary.size();
+    a.close();
 }

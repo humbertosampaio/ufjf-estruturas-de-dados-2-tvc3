@@ -6,8 +6,8 @@
 #define TRABED2PART3_LZW_H
 
 #include <iostream>
-#include <unordered_map>
 #include <vector>
+#include <fstream>
 #include "Question.h"
 #include "TrieTernaria.h"
 
@@ -19,11 +19,10 @@ public:
     LZW();
     ~LZW() = default;
     string compressText(string text);
-    void compressQuestions(vector<Question> questionList);
+    void compressQuestions(vector<Question> questionList, string savePath);
 
 private:
-    unordered_map<string, unsigned int> dictionary;
-    TrieTernaria _dictionary;
+    TrieTernaria dictionary;
     unsigned int index;
 
 };

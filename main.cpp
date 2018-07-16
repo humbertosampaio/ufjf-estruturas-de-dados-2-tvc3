@@ -2,8 +2,6 @@
 #include <string>
 #include "Headers/Question.h"
 #include "Headers/FileUtils.h"
-#include "Headers/HuffmanTree.h"
-#include "Headers/HuffmanNode.h"
 #include "Headers/Huffman.h"
 #include "Headers/LZ77.h"
 #include "Headers/LZ78.h"
@@ -88,14 +86,19 @@ int main(int argc, char **argv) {
 	//system("PAUSE");
 	return 0;*/
 
+    LZW lzw;
     Huffman h;
-    vector<Question> q;
+    vector<Question> q, randQ;
     char c;
 
-    FileUtils::readFileQuestion("C:/Users/Luis/Desktop/Trabalho_ED2/Questions.csv", q);
-    string teste = h.encode(q, 50000);
-    string d = h.decode(teste);
-    cout << d << endl;
+    FileUtils::readFileQuestion("/home/edson/pythonquestions/Questions.csv", q);
+    randQ = getVetQuestionsRand(q, 100000);
+    lzw.compressQuestions(randQ, "teste.txt");
+    return 0;
+
+    //string teste = h.encode(q, 50000);
+    //string d = h.decode(teste);
+    //cout << d << endl;
     cin >> c;
 
 	///////////////////// main, entre outros
