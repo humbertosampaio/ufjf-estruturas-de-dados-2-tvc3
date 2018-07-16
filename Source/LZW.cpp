@@ -7,13 +7,12 @@
 
 LZW::LZW()
 {
-    dictionary.reserve(100000000);
     string s;
     index = 0;
     for (index; index < 256; index++)
     {
         s = (char)index;
-        dictionary.insert(pair<string, unsigned int>(s, index));
+        dictionary.insere(s);
     }
 }
 
@@ -21,48 +20,34 @@ string LZW::compressText(string text)
 {
     string str, strRet;
     str.push_back(text[0]);
-    unordered_map<string,unsigned int>::iterator it;
+    unsigned long int dictionaryId;
     for (auto i = text.begin()+1; i != text.end(); ++i)
     {
-        //cout << str << endl;
-        it = dictionary.find(str+(*i));
-        if (it != dictionary.end()) {
+        dictionaryId = dictionary.busca(str+(*i));
+        if (dictionaryId) {
             str.push_back(*i);
             continue;
         }
         else {
-            //cout << str << " ";
-            //strRet += str + " ";
+            strRet += to_string(dictionary.busca(str)) + " ";
             str.push_back(*i);
-            cout << str << " " << index << " " << endl;
-            dictionary.insert(pair<string,unsigned int>(str, index++));
+            dictionary.insere(str);
             str.clear();
             str.push_back(*i);
         }
     }
-    int i = 256;
-    while (i < dictionary.size())
-    {
-        for (auto &it : dictionary)
-        {
-            if (it.second == i) {
-                ++i;
-                //cout << it.first << endl;
-            }
-        }
-    }
-    strRet += str + " ";
-    //cout << strRet;
     return strRet;
 }
 
-void LZW::compressQuestions(vector<Question> questionList)
+void LZW::compressQuestions(vector<Question> questionList, string savePath)
 {
-
-    for (int i = 0; i < 100; ++i)
+    ofstream a;
+    a.open(savePath, ios_base::app);
+    for (int i = 0; i < questionList.size(); ++i)
     {
-        compressText(questionList[i].getBody());
-        cout << i;
+        a << compressText(questionList[i].getBody());
+        if (i%1000 == 0)
+            cout << i << endl;
     }
-    cout << dictionary.size();
+    a.close();
 }
