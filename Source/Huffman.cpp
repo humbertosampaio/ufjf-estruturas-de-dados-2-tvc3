@@ -240,6 +240,34 @@ string Huffman::encode(string text) {
     return code;
 }
 
+string Huffman::encode(vector<Question> &questionList, int n) {
+    string code;
+    string finalText;
+
+    if(firstElement == nullptr){
+
+        for(int i = 0; i < n; i++) {
+            string text = questionList[i].getBody();
+            string::iterator it;
+            it = text.begin();
+
+            while (it != text.end()) {
+                insert(*it, 1);
+                it++;
+            }
+
+            finalText += questionList[i].getBody();
+        }
+
+        generateTree();
+        generateCode(code, firstElement);
+
+        return generateStringCodes(finalText);
+    }
+
+    return code;
+}
+
 
 string Huffman::decode(string text){
 
@@ -273,12 +301,26 @@ string Huffman::decode(string text){
 }
 
 
-void Huffman::compressQuestions(vector<Question> questionList){
-    for (int i = 0; i < 100; ++i)
-    {
-        encode(questionList[i].getBody());
-        cout << i;
+void Huffman::compressQuestions(vector<Question> &questionList){
+    string question;
+    int size = questionList.size();
+
+    //question.reserve(880000000);
+
+
+    for(int i = 0; i < 10000; i++){
+        question.append(questionList[i].getBody());
     }
+
+
+
+    cout << "Teste: ";
+
+    string codificacao = this->encode(question);
+
+    cout << "Codificacao: " << codificacao << endl;
+
+    cout << "Decodificacao: " << this->decode(codificacao);
 }
 
 

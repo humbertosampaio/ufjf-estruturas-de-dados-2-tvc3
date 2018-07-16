@@ -19,9 +19,10 @@ public:
     ~Huffman();
 
     string encode(string text);
+    string encode(vector<Question> &questionList, int n);
     string decode(string text);
     void generateTree();
-    void compressQuestions(vector<Question> questionList);
+    void compressQuestions(vector<Question> &questionList);
 
 private:
     void insert(char c, int f); //Insere o caractere
