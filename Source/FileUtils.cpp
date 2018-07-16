@@ -29,6 +29,7 @@ void FileUtils::readFileQuestion(string path, vector<Question> &questionList)
     {
         cout << "\tLendo arquivo de registros Questions.csv" << endl;
         cout << "\tPath (caminho): " << path << endl;
+
         //variavel para calcular tempo de execucao
         clock_t tStart = clock();
 
@@ -53,7 +54,8 @@ void FileUtils::readFileQuestion(string path, vector<Question> &questionList)
         //iteracao principal
         string progressBar;
         cout<< "\tLendo Questions.csv\n";
-        while (!file.eof())
+		
+        while (!file.eof() || questionList.size() == 0)
         {
             while (++i < length && buffer[i] != char_traits<char>::eof())
             {
@@ -103,137 +105,6 @@ void FileUtils::readFileQuestion(string path, vector<Question> &questionList)
     exit(0);
 }
 
-// Comentado, pois nessa parte não usamos o arquivos de Tags
-/*
-void FileUtils::readFileTag(string path, vector<Tag> &tagList)
-{
-	fstream file;
-	file.open(path.c_str());
-
-	if (file.is_open())
-	{
-
-        int registriesCount = 0;
-		string tag;
-		int questionId;
-		int atualId;
-		file >> tag;
-        file >> questionId >> tag;
-        tag.erase(0, 1);
-        atualId = questionId;
-        list<string> atualList;
-        atualList.push_back(tag);
-
-        string progressBar;
-        cout << "\tLendo arquivo de registros Tags.csv" << endl;
-		cout << "\tPath (caminho): " << path << endl;
-		while (file >> questionId >> tag)
-		{
-			//apaga a virgua da string
-			tag.erase(0, 1);
-            if (atualId != questionId) {
-                tagList.emplace_back(atualId, atualList);
-                atualList.clear();
-            }
-            ++registriesCount;
-            atualList.push_back(tag);
-            atualId = questionId;
-
-            if (registriesCount % 75000 == 0)
-            {
-                progressBar += "=";
-                cout << right<< "\t["<< progressBar<< setw(25-(registriesCount/75000)) << "] " << registriesCount/18750 << "%\r" << std::flush;
-           }
-		}
-        cout << endl;
-        resetiosflags;
-        tagList.emplace_back(atualId, atualList);
-        file.close();
-        return;
-    }
-	cout << "falha na leitura do arquivo!" << endl;
-}
-*/
-/*
-void FileUtils::readFileAnswer(string path, vector<Answer> &answerList)
-{
-    fstream file;
-    file.open(path.c_str());
-
-    if (file.is_open())
-    {
-        //variavel para calcular tempo de execucao
-
-        //lendo o arquivo em blocos de 4MB
-        unsigned int length = 4 * 1024 * 1024;
-
-        //criando e inicializando buffer
-        char *buffer = new char[length];
-        file.read(buffer, length);
-
-        //variaveis auxiliares
-        string tempString;
-        string *obj = new string[6];
-        int objPosition = 0;
-        int quotationMarksCount = 0;
-        long registriesCount = 0;
-        int i = 0;
-
-        //ignorando cabecalho
-        for (; buffer[i] != '\n'; ++i)
-            ;
-
-        //iteracao principal
-        string progressBar = "=";
-        cout << "\tLendo arquivo de registros Answers.csv" << endl;
-        cout << "\tPath (caminho): " << path << endl;
-        while (!file.eof())
-        {
-            while (++i < length && buffer[i] != char_traits<char>::eof())
-            {
-                if (buffer[i] != ',' && buffer[i] != '\n')
-                {
-                    if (buffer[i] == '"')
-                        quotationMarksCount++;
-                    tempString.push_back(buffer[i]);
-                } else if (quotationMarksCount % 2 == 0)
-                {
-                    obj[objPosition] = tempString;
-                    tempString.clear();
-                    ++objPosition;
-                }
-                if (objPosition > 5)
-                {
-                    answerList.emplace_back(obj);
-                    registriesCount++;
-
-                    if (registriesCount % 38400 == 0)
-                    {
-                        progressBar += "=";
-                        cout << right<< "\t["<< progressBar<< setw(27-(registriesCount/38400)) << "] " << registriesCount/9550 << "%\r" << std::flush;
-                        //cout << right<< "\t["<< progressBar<< setw(27-(registriesCount/40000)) << "] " << registriesCount/1000 << "%\r" << std::flush;
-                    }
-
-                    objPosition = 0;
-                    quotationMarksCount = 0;
-                    delete[] obj;
-                    obj = new string[6];
-                }
-            }
-            file.read(buffer, length);
-            i = -1;
-        }
-        cout << endl;
-        resetiosflags;
-        file.close();
-        delete[] buffer;
-        delete[] obj;
-        return;
-    }
-    cout << "falha na leitura do arquivo!" << endl;
-}
- */
-
 vector<int> FileUtils::readInputFile(string path)
 {
     ifstream reader(path, std::ifstream::in);
@@ -264,12 +135,16 @@ vector<int> FileUtils::readInputFile(string path)
         pauseScreen(true);
         endProgram();
     }
+    cout << "----------------------------------------------------" << endl;
+    cout << "Arquivo de entrada " << path << " lido com sucesso." << endl;
+    cout << "----------------------------------------------------" << endl;
     return vector;
 }
 
-void FileUtils::writeToOutputFile(const string &outputFileName, const string &text)
+void FileUtils::writeToOutputFile(const string &outputFileName, const string &text, bool append)
 {
-    ofstream writer(outputFileName, ios::app);
+    ofstream writer;
+    append ? writer.open(outputFileName, ios::app) : writer.open(outputFileName);
     if (writer.is_open())
     {
         writer << text << endl;
@@ -278,7 +153,6 @@ void FileUtils::writeToOutputFile(const string &outputFileName, const string &te
     else
         cout << "Falha ao escrever no arquivo \"" << outputFileName << "\"." << endl;
 }
-
 
 void FileUtils::endProgram()
 {
@@ -297,7 +171,7 @@ void FileUtils::pauseScreen(bool continuar)
     int c;
     cout << endl << "Pressione <Enter> para " << (continuar ? "continuar" : "fechar");
     cout << " o algoritmo...." << endl;
-    while ((c = getchar()) != '\n' && c != EOF);
+    while (c != EOF && (c = getchar()) != '\n');
     clearerr(stdin);
     //getchar();
 }
@@ -328,3 +202,4 @@ void FileUtils::showTop()
     cout << "---------------------------- INFORMACOES ----------------------------" << endl;
     pauseScreen(true);
 }
+
