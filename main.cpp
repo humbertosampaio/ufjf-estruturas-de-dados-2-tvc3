@@ -126,7 +126,7 @@ void openMenu(Variables &vars) {
     cout << "||       Opcao 4: Codificacao e Decodificacao por LZW                 ||" << endl;
     cout << "||       Opcao 5: Testes                                              ||" << endl;
     cout << "||--------------------------------------------------------------------||" << endl;
-    cout << "||       Opcao: " << endl;
+    cout << "||       Opcao: ";
     cin >> vars.entry;
     cout << "||--------------------------------------------------------------------||" << endl;
     switch (vars.entry) {
@@ -239,10 +239,10 @@ void codeDecodeLZ78(Variables &vars)
 
 void codeDecodeLZW(Variables &vars)
 {
-	cout << "Codificacao por LZ78" << endl;
-	LZW lz;
+	cout << "Codificacao por LZW" << endl;
 	for (auto &itNs : vars.Ns)
 	{
+		LZW lz;
 		cout << "Codificacao de " << itNs << " questoes." << endl;
 		vector<Question> tempVecQuestion = getVetQuestionsRand(vars.questionVector, itNs);
 		string str1 = getBodyNQuestions(tempVecQuestion);
@@ -252,12 +252,6 @@ void codeDecodeLZW(Variables &vars)
 		string str2 = lz.compressText(str1);
 		str1.clear();
 		FileUtils::writeToOutputFile("LZW_Codificado_N_" + to_string(itNs) + ".txt", str2, false);
-
-		// comentado pois ainda nao existe funcao de descompressao
-		/*str1 = lz.decompress(str2);
-		str2.clear();
-		FileUtils::writeToOutputFile("LZ78_Decodificado_N_" + to_string(itNs) + ".txt", str1, false);
-		str1.clear();*/
 	}
 }
 

@@ -4,6 +4,7 @@
 
 #include <map>
 #include "../Headers/LZW.h"
+#include <chrono>
 
 LZW::LZW()
 {
@@ -18,9 +19,12 @@ LZW::LZW()
 
 string LZW::compressText(string text)
 {
+	clock_t tStart = clock();
+
     string str, strRet;
     str.push_back(text[0]);
     unsigned long int dictionaryId;
+	int index = 1;
     for (auto i = text.begin()+1; i != text.end(); ++i)
     {
         dictionaryId = dictionary.busca(str+(*i));
@@ -35,7 +39,11 @@ string LZW::compressText(string text)
             str.clear();
             str.push_back(*i);
         }
+		++index;
+		if (index % 1000000 == 0)
+			cout << "Compactacao: " << index << " / " << text.length() << " caracteres processados\r";
     }
+	cout << endl << "Tempo gasto na compressao: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << "s" << endl << endl;
     return strRet;
 }
 
